@@ -15,5 +15,5 @@ This is a simple bash script for use on gcloud VMs that will automatically execu
 ```bash
 git clone https://github.com/Ollie1700/clocoss-distributed-worker-app;
 cd clocoss-distributed-worker-app;
-bash signoff-1.sh;
+bash signoff-1.sh [NUMBER_OF_WORKERS];
 ```
