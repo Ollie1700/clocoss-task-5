@@ -18,13 +18,13 @@ secretKey=`openssl rand -base64 32`;
 workerName="ollie-worker-bee";
 
 echo "Installing dependencies...";
-curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash - > /dev/null 2>&1;
-sudo apt-get -qq install nodejs > /dev/null 2>&1;
-sudo apt-get -qq install git > /dev/null 2>&1;
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -;
+sudo apt-get -qq install nodejs;
+sudo apt-get -qq install git;
 echo "Dependencies installed!";
 
 echo "Cloning master worker...";
-git clone https://github.com/portsoc/clocoss-master-worker > /dev/null 2>&1;
+git clone https://github.com/portsoc/clocoss-master-worker;
 cd clocoss-master-worker;
 echo "Installing master worker...";
 npm install --silent > /dev/null 2>&1;
@@ -36,13 +36,14 @@ echo "Creating $N instance(s) in the background...";
 for i in `seq 1 $N`;
 do
         gcloud compute instances create "$workerName"-"$i" \
-        --machine-type f1-micro \
+        --machine-type n1-standard-1 \
         --tags http-server,https-server \
         --metadata secret=$secretKey,serverip=`curl -s -H "Metadata-Flavor: Google" \
                                                "http://metadata.google.internal/computeMetadata/v1/instance/network-interfaces/0/access-configs/0/external-ip"` \
         --metadata-from-file \
           startup-script=../worker-bee-startup-script.sh \
-        --quiet > /dev/null 2>&1 &
+        --preemptible \
+        --quiet &
 done;
 
 echo "Starting server... (remember that VMs are being generated in the background, please wait a few minutes before expecting results)";
